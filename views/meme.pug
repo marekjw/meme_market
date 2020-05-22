@@ -6,8 +6,24 @@ html
     body
         #main-container.grid-container
             #container-header.grid-content
-                img(src='images/title.jpg' style='width:100%')
+                a(href = '/')
+                    button.back Go Back
             #container-meme.grid-content
-                h1 Meme #{meme.id}
+                p.meme-name Meme #{meme.id} - #{meme.name} 
                     .single-meme
                         img(src=meme.src).meme
+                
+                p This meme costs #{meme.price}
+                   
+                
+                #form-container.card
+                    form(action='/meme/' + meme.id, method='post')
+                        label(for="price") New Price:
+                        input#price(type='number' name='price') 
+                        input(type="submit" value="Submit")
+
+                p and the price history is:
+
+                ul
+                    each price in prices
+                        li #{price} $

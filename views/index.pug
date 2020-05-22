@@ -1,0 +1,17 @@
+html
+    head
+        title= title
+    style
+        include style.css
+    body
+        #main-container.grid-container
+            #container-header.grid-content
+                img(src='images/title.jpg' style='width:100%')
+            #container-meme.grid-content
+                h1="Meme list"
+                ul.meme-list
+                    each meme in memes
+                        li
+                            a.meme-link.meme-name(href="meme/" + meme.id) #{meme.name} : #{meme.price}
+                                br
+                                img(src=meme.src).meme

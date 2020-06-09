@@ -2,7 +2,7 @@
   "name": "memes",
   "version": "1.0.0",
   "description": "dobre meme",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --target es2015 main.ts"
@@ -10,6 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "csurf": "^1.11.0",
     "express": "^4.17.1",
     "pug": "^2.0.4",
     "typescript": "^3.9.3"

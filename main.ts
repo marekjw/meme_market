@@ -1,4 +1,6 @@
 const express = require('express')
+const csrf = require('csurf')
+const cookiePareser = require('cookie-parser')
 
 type memeJSON = {
     id: number
@@ -66,6 +68,8 @@ app.use(express.static('public'));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'pug')
+
+
 
 
 app.get('/', function (req, res) {

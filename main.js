@@ -6,8 +6,6 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 var express = require('express');
-
-
 var Meme = /** @class */ (function () {
     function Meme(id, price, src, name) {
         this.data = {

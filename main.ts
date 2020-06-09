@@ -1,6 +1,10 @@
 const express = require('express')
 const csrf = require('csurf')
 const cookiePareser = require('cookie-parser')
+const bodyParser = require('body-parser')
+
+const csrfProtection = csrf({ cookie: true })
+const parseForm = bodyParser.urlencoded({ extended: false })
 
 type memeJSON = {
     id: number
@@ -64,10 +68,14 @@ function most_expensive(): JSON[] {
 }
 
 let app = express()
+
+app.set('view engine', 'pug')
+
 app.use(express.static('public'));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'pug')
+app.use(cookiePareser())
+
 
 
 
@@ -89,9 +97,9 @@ function get_meme(id: number): Meme {
 
 
 
-app.get('/meme/:memeId', (req, res) => {
+app.get('/meme/:memeId', csrfProtection, (req, res) => {
     let meme = get_meme(parseInt(req.params.memeId))
-    res.render('meme', { meme: JSON.parse(meme.toString()), prices: [...meme.priceHistory].reverse() })
+    res.render('meme', { meme: JSON.parse(meme.toString()), prices: [...meme.priceHistory].reverse(), csrfToken: req.csrfToken() })
 })
 
 

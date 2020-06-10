@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --target es2015 main.ts"
+    "build": "tsc",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,12 @@
     "typescript": "^3.9.3"
   },
   "devDependencies": {
-    "@types/node": "^14.0.4",
-    "ts-node": "^8.10.1"
+    "@types/body-parser": "^1.19.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/csurf": "^1.9.36",
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.13",
+    "ts-node": "^8.10.1",
+    "tslint": "^6.1.2"
   }
 }

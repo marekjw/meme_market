@@ -6,6 +6,9 @@ import bodyParser from 'body-parser'
 import { Meme } from './meme'
 import { getMeme, getTopPriced } from "./memeDB"
 import { stringify } from "querystring"
+import { Session } from "inspector"
+
+import session from 'express-session'
 
 const csrfProtection = csrf({ cookie: true })
 const parseForm = bodyParser.urlencoded({ extended: false })
@@ -19,10 +22,24 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookiePareser())
 
+app.set('trust proxy', 1)
+
+const age15Minutes = 15 * 60 * 1000
+app.use(session({ secret: 'elo wale wiadro', cookie: { maxAge: age15Minutes } }))
+
+app.get('*', (req, res, next) => {
+    if (req.session.views) {
+        req.session.views++
+    } else {
+        req.session.views = 1
+    }
+    next()
+})
+
 app.get('/', function (req, res) {
     console.log('get /')
     getTopPriced(3).then((memeList) => {
-        res.render('index', { memes: memeList, title: 'Meme market' })
+        res.render('index', { memes: memeList, title: 'Meme market', views: req.session.views })
     }).catch((reason) => {
         console.log(reason)
         res.render('error', { title: 'ERROR' })
@@ -41,7 +58,7 @@ app.get('/meme/:memeId', csrfProtection, (req, res) => {
     getMeme(parseInt(req.params.memeId))
         .then(([meme_res, history]) => {
             console.log(history)
-            res.render('meme', { meme: meme_res, priceHistory: history })
+            res.render('meme', { meme: meme_res, priceHistory: history, views: req.session.views })
         }).catch((reason) => {
             console.log('Error at get /meme/', req.params.memeId)
             console.log(reason)

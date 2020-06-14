@@ -30,6 +30,10 @@ div{
     grid-area: navbar;
 }
 
+footer{
+    grid-area: footer;
+}
+
 img.meme{
     display: block;
     width: 100%;
@@ -48,6 +52,7 @@ a.meme-link, .single-meme{
         grid-template-areas: 
         'header header header'
         '. meme .'
+        '. footer .'
         ;
     }
 
@@ -63,6 +68,7 @@ a.meme-link, .single-meme{
         grid-template-areas: 
         'header'
         'meme'
+        'footer'
         ;
     }
     a.meme-link, .single-meme{

@@ -12,6 +12,6 @@ html
                 ul.meme-list
                     each meme in memes
                         li
-                            a.meme-link.meme-name(href="meme/" + meme.id) #{meme.name} : #{meme.price}
+                            a.meme-link.meme-name(href="meme/" + meme.id) price : #{meme.price}
                                 br
                                 img(src=meme.src).meme

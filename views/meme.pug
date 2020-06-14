@@ -9,9 +9,9 @@ html
                 a(href = '/')
                     button.back Go Back
             #container-meme.grid-content
-                p.meme-name Meme #{meme.id} - #{meme.name} 
+                p.meme-name Meme #{meme.id} 
                     .single-meme
-                        img(src=meme.src).meme
+                        img(src='/' + meme.src).meme
                 
                 p This meme costs #{meme.price}
                    
@@ -26,5 +26,7 @@ html
                 p and the price history is:
 
                 ul
-                    each price in prices
-                        li #{price} $
+                    each record in priceHistory
+                        li 
+                            | #{record.price}$, by 
+                            span.recordUsername #{record.username}

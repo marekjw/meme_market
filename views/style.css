@@ -13,6 +13,11 @@ div{
     width: 100%;
 }
 
+.recordUsername{
+    color: #1c1ec6;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+}
+
 #container-header{
     grid-area: header;
 }

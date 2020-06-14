@@ -5,14 +5,17 @@ block content
             img(src='/' + meme.src).meme
     
     p This meme costs #{meme.price}
-        
     
-    #form-container.card
-        form(action='/meme/' + meme.id, method='post')
-            input(type="hidden", name="_csrf", value=csrfToken)
-            label(for="price") New Price:
-            input#price(type='number' name='price') 
-            input(type="submit" value="Submit")
+    if (username)
+    
+        #form-container.card
+            form(action='/meme/' + meme.id, method='post')
+                input(type="hidden", name="_csrf", value=csrfToken)
+                label(for="price") New Price:
+                input#price(type='number' name='price') 
+                input(type="submit" value="Submit")
+    else
+        p You need to log in if you want to change the price
 
     p and the price history is:
 

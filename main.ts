@@ -5,7 +5,7 @@ import bodyParser from 'body-parser'
 import { prGetUser } from './userDB'
 
 import { Meme } from './meme'
-import { getMeme, getTopPriced } from "./memeDB"
+import { getMeme, getTopPriced, changePrice } from "./memeDB"
 import { stringify } from "querystring"
 import { Session } from "inspector"
 
@@ -60,7 +60,7 @@ app.listen(port, () => {
 app.get('/meme/:memeId', csrfProtection, (req, res) => {
     getMeme(parseInt(req.params.memeId))
         .then(([meme_res, history]) => {
-            res.render('meme', { meme: meme_res, priceHistory: history, views: req.session.views, username: req.session.username })
+            res.render('meme', { meme: meme_res, priceHistory: history, views: req.session.views, username: req.session.username, csrfToken: req.csrfToken() })
         }).catch((reason) => {
             console.log('Error at get /meme/', req.params.memeId)
             console.log(reason)
@@ -71,23 +71,21 @@ app.get('/meme/:memeId', csrfProtection, (req, res) => {
 
 app.post('/meme/:memeId', csrfProtection, function (req, res) {
 
-
-
-
-
-    /*
-    let promise = new Promise((resolve, reject) => {
-        let meme = get_meme(parseInt(req.params.memeId))
-        resolve()
-    })
-
-    promise.then((meme: Meme) => {
-        
-        let price = req.body.price;
-        meme.change_price(price)
-        res.render('meme', { meme: JSON.parse(meme.toString()), prices: [...meme.priceHistory].reverse() })
-    })
-*/
+    if (req.session.loggedin) {
+        if (!req.body.price)
+            res.redirect('/meme/' + req.params.memeId)
+        else {
+            const d = new Date()
+            changePrice(parseInt(req.params.memeId), req.body.price, req.session.user_id, d.getTime()).then(() => {
+                res.redirect('/meme/' + req.params.memeId)
+            }).catch((reason) => {
+                console.log(reason)
+                res.render('error', { message: 'could not change price' })
+            })
+        }
+    } else {
+        res.redirect('/meme/' + req.params.memeId)
+    }
 })
 
 app.get('/login', (req, res) => {
@@ -98,10 +96,11 @@ app.post('/auth', function (req, res) {
     const username = req.body.username;
     const password = req.body.password;
     if (username && password) {
-        prGetUser(username, password).then((valid) => {
-            if (valid) {
+        prGetUser(username, password).then((id) => {
+            if (id >= 0) {
                 req.session.loggedin = true;
                 req.session.username = username;
+                req.session.user_id = id
                 res.redirect('/');
             } else {
                 res.render('login', { invalid: true, isLoginPage: true })

@@ -1,0 +1,26 @@
+html
+    head
+        title= title
+    style
+        include style.css
+    body
+        #main-container.grid-container
+            #container-header.grid-content
+
+                if(!isLoginPage)
+                    if(username)
+                        p Welcome, 
+                            span.recordUsername #{username}
+                    else
+                        a(href='/login')
+                            button.back sign in 
+
+                a(href = '/')
+                    button.back main page
+            #container-meme.grid-content
+                block content
+
+
+            footer
+                p You've visited #{views} sites.
+                

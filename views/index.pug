@@ -8,6 +8,14 @@ html
             #container-header.grid-content
                 img(src='images/title.jpg' style='width:100%')
             #container-meme.grid-content
+                if(username)
+                    p Welcome, 
+                        span.recordUsername #{username}, 
+                        a(href='/signout') signout
+                else
+                    a(href='/login')
+                        button.back sign in 
+
                 h1="Meme list"
                 ul.meme-list
                     each meme in memes

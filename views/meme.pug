@@ -1,34 +1,23 @@
-html
-    head
-        title= title
-    style
-        include style.css
-    body
-        #main-container.grid-container
-            #container-header.grid-content
-                a(href = '/')
-                    button.back Go Back
-            #container-meme.grid-content
-                p.meme-name Meme #{meme.id} 
-                    .single-meme
-                        img(src='/' + meme.src).meme
-                
-                p This meme costs #{meme.price}
-                   
-                
-                #form-container.card
-                    form(action='/meme/' + meme.id, method='post')
-                        input(type="hidden", name="_csrf", value=csrfToken)
-                        label(for="price") New Price:
-                        input#price(type='number' name='price') 
-                        input(type="submit" value="Submit")
+extends layout
+block content
+    p.meme-name Meme #{meme.id} 
+        .single-meme
+            img(src='/' + meme.src).meme
+    
+    p This meme costs #{meme.price}
+        
+    
+    #form-container.card
+        form(action='/meme/' + meme.id, method='post')
+            input(type="hidden", name="_csrf", value=csrfToken)
+            label(for="price") New Price:
+            input#price(type='number' name='price') 
+            input(type="submit" value="Submit")
 
-                p and the price history is:
+    p and the price history is:
 
-                ul
-                    each record in priceHistory
-                        li 
-                            | #{record.price}$, by 
-                            span.recordUsername #{record.username}
-            footer
-                p You've visited #{views} sites.
+    ul
+        each record in priceHistory
+            li 
+                | #{record.price}$, by 
+                span.recordUsername #{record.username}

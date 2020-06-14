@@ -2,6 +2,7 @@ import express from "express"
 import csrf from 'csurf'
 import cookiePareser from 'cookie-parser'
 import bodyParser from 'body-parser'
+import { prGetUser } from './userDB'
 
 import { Meme } from './meme'
 import { getMeme, getTopPriced } from "./memeDB"
@@ -38,12 +39,13 @@ app.get('*', (req, res, next) => {
     next()
 })
 
+
 app.get('/', function (req, res) {
     getTopPriced(3).then((memeList) => {
-        res.render('index', { memes: memeList, title: 'Meme market', views: req.session.views })
+        res.render('index', { memes: memeList, title: 'Meme market', views: req.session.views, username: req.session.username })
     }).catch((reason) => {
         console.log(reason)
-        res.render('error', { title: 'ERROR' })
+        res.render('error', { title: 'ERROR', username: req.session.username })
     })
 });
 
@@ -58,16 +60,18 @@ app.listen(port, () => {
 app.get('/meme/:memeId', csrfProtection, (req, res) => {
     getMeme(parseInt(req.params.memeId))
         .then(([meme_res, history]) => {
-            res.render('meme', { meme: meme_res, priceHistory: history, views: req.session.views })
+            res.render('meme', { meme: meme_res, priceHistory: history, views: req.session.views, username: req.session.username })
         }).catch((reason) => {
             console.log('Error at get /meme/', req.params.memeId)
             console.log(reason)
-            res.render('error', { message: "Couldn't get the meme" })
+            res.render('error', { message: "Couldn't get the meme", username: req.session.username })
         })
 })
 
 
 app.post('/meme/:memeId', csrfProtection, function (req, res) {
+
+
 
 
 
@@ -84,4 +88,38 @@ app.post('/meme/:memeId', csrfProtection, function (req, res) {
         res.render('meme', { meme: JSON.parse(meme.toString()), prices: [...meme.priceHistory].reverse() })
     })
 */
+})
+
+app.get('/login', (req, res) => {
+    res.render('login', { title: 'Login to meme market', views: req.session.views, isLoginPage: true })
+})
+
+app.post('/auth', function (req, res) {
+    const username = req.body.username;
+    const password = req.body.password;
+    if (username && password) {
+        prGetUser(username, password).then((valid) => {
+            if (valid) {
+                req.session.loggedin = true;
+                req.session.username = username;
+                res.redirect('/');
+            } else {
+                res.render('login', { invalid: true, isLoginPage: true })
+            }
+        }).catch((reason) => {
+            console.log('error at login')
+            console.log(reason)
+            res.render('error', { message: 'Something went wrong' })
+        })
+    } else {
+        res.render('login', { missing: true, isLoginPage: true });
+    }
+});
+
+app.get('/signout', (req, res) => {
+    if (req.session.loggedin) {
+        delete req.session['username']
+        delete req.session['loggedin']
+    }
+    res.redirect('/')
 })
